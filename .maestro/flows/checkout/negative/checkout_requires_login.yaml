@@ -1,0 +1,13 @@
+appId: com.saucelabs.mydemoapp.rn
+tags:
+  - checkout
+  - negative
+---
+- launchApp:
+    clearState: true
+- tapOn: "Sauce Labs Backpack"
+- tapOn: "Add To Cart"
+- tapOn: "cart badge"
+- tapOn: "Proceed To Checkout"
+- assertVisible: "Username input field"
+- assertVisible: "Login button"

@@ -1,0 +1,13 @@
+appId: com.saucelabs.mydemoapp.rn
+tags:
+  - login
+  - smoke
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../../../commands/login.yaml
+    env:
+      MAESTRO_USERNAME: "bob@example.com"
+      MAESTRO_PASSWORD: "10203040"
+- assertVisible: "PRODUCTS"

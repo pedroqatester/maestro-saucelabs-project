@@ -1,0 +1,9 @@
+appId: com.saucelabs.mydemoapp.rn
+---
+- tapOn: "open menu"
+- tapOn: "Log In"
+- tapOn: "Username input field"
+- inputText: "${MAESTRO_USERNAME}"
+- tapOn: "Password input field"
+- inputText: "${MAESTRO_PASSWORD}"
+- tapOn: "Login button"

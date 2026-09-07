@@ -1,0 +1,9 @@
+appId: com.saucelabs.mydemoapp.rn
+tags:
+  - catalog
+  - smoke
+---
+- runFlow:
+    file: ../../../commands/add_product_to_cart.yaml
+- tapOn: "cart badge"
+- assertVisible: "Sauce Labs Backpack"
