@@ -5,8 +5,10 @@ tags:
 ---
 - launchApp:
     clearState: true
-- tapOn: "Sauce Labs Backpack"
-- tapOn: "Add To Cart"
+- runFlow:
+    file: ../../../commands/add_product_to_cart.yaml
+    env:
+      PRODUCT_NAME: "Sauce Labs Backpack"
 - tapOn: "cart badge"
 - tapOn: "Proceed To Checkout"
 - assertVisible: "Username input field"

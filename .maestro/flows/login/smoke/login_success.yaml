@@ -7,4 +7,7 @@ tags:
     clearState: true
 - runFlow:
     file: ../../../commands/login.yaml
+    env:
+      MAESTRO_USERNAME: "${MAESTRO_USERNAME}"
+      MAESTRO_PASSWORD: "${MAESTRO_PASSWORD}"
 - assertVisible: "PRODUCTS"

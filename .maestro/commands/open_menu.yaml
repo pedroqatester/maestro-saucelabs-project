@@ -1,12 +1,12 @@
 appId: com.saucelabs.mydemoapp.rn
 ---
 - runFlow:
-    file: open_menu.yaml
-- runFlow:
     when:
       platform: Android
-    file: login_android.yaml
+    commands:
+      - tapOn: "open menu"
 - runFlow:
     when:
       platform: iOS
-    file: login_ios.yaml
+    commands:
+      - tapOn: "Menu, tab, 3 of 3"

@@ -1,6 +1,4 @@
 appId: com.saucelabs.mydemoapp.rn
 ---
-- launchApp:
-    clearState: true
-- tapOn: "Sauce Labs Backpack"
+- tapOn: "${PRODUCT_NAME}"
 - tapOn: "Add To Cart"
