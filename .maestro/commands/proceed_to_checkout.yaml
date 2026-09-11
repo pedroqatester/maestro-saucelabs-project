@@ -1,0 +1,16 @@
+appId: com.saucelabs.mydemoapp.rn
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "cart badge"
+      - tapOn: "Proceed To Checkout"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "1"
+          index: 1
+      - tapOn: "Proceed To Checkout"
