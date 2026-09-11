@@ -9,7 +9,7 @@ tags:
     file: ../../../commands/add_product_to_cart.yaml
     env:
       PRODUCT_NAME: "Sauce Labs Backpack"
-- tapOn: "cart badge"
-- tapOn: "Proceed To Checkout"
-- assertVisible: "Username input field"
-- assertVisible: "Login button"
+- runFlow:
+    file: ../../../commands/proceed_to_checkout.yaml
+- runFlow:
+    file: ../../../commands/login_inputs.yaml
