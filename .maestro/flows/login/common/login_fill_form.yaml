@@ -1,5 +1,7 @@
 appId: com.saucelabs.mydemoapp.rn
 name: Subflow - Fill Login Form
+tags:
+  - common 
 ---
 - runFlow:
     when:
