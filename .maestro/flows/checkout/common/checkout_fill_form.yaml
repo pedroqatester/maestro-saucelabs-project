@@ -1,0 +1,32 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Fill Checkout Form
+---
+- assertVisible: "Checkout"
+- assertVisible: "Enter a shipping address"
+- assertVisible: "Full Name*"
+- tapOn: "Rebecca Winter"
+- inputText: "Pedro"
+- assertVisible: "Address Line 1*"
+- tapOn: "Mandorley 112"
+- inputText: "Avenida 1"
+- assertVisible: "Address Line 2"
+- tapOn: "Entrance 1"
+- inputText: "Avenida 2"
+- tapOn:
+      point: "90%,90%"
+- assertVisible: "City*"
+- tapOn: "Truro"
+- inputText: "Sao Paulo"
+- assertVisible: "State/Region"
+- tapOn: "Cornwall"
+- inputText: "Sao Paulo"
+- tapOn:
+      point: "90%,90%"
+- assertVisible: "Zip Code*"
+- tapOn: "89750"
+- inputText: "01310-000"
+- assertVisible: "Country*"
+- tapOn: "United Kingdom"
+- inputText: "Brazil"
+- tapOn:
+      point: "90%,90%"

@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Checkout payment button tap
+---
+- runFlow:
+    when:
+      true: "${PROCEED_TO_PAYMENT}"
+    commands:
+      - runFlow:
+          when:
+            platform: Android
+          commands:
+            - tapOn: "To Payment button"
+- runFlow:
+          when:
+            platform: iOS
+          commands:
+            - tapOn: "To Payment"
