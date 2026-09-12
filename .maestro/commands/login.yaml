@@ -5,8 +5,26 @@ appId: com.saucelabs.mydemoapp.rn
 - runFlow:
     when:
       platform: Android
-    file: login_android.yaml
+    commands: 
+        - tapOn: "Log In"
+        - tapOn: "Username input field"
+        - inputText: "${MAESTRO_USERNAME}"
+        - tapOn: "Password input field"
+        - inputText: "${MAESTRO_PASSWORD}"
+        - tapOn: "Login button"
 - runFlow:
     when:
       platform: iOS
-    file: login_ios.yaml
+    commands:
+        - tapOn: "Log In"
+        - tapOn:
+            id: "Username input field"
+        - inputText: "${MAESTRO_USERNAME}"
+        - tapOn:
+            id: "Password input field"
+        - inputText: "${MAESTRO_PASSWORD}"
+        - tapOn:
+           point: "50%,30%"
+        - tapOn:
+            text: "Login"
+            index: 1
