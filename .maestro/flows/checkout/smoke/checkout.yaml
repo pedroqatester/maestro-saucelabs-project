@@ -1,0 +1,22 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Checkout Smoke Test full 
+tags:
+  - checkout
+  - smoke
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../../../commands/add_product_to_cart.yaml
+    env:
+      PRODUCT_NAME: "Sauce Labs Backpack"
+- runFlow:
+    file: ../../../commands/proceed_to_checkout.yaml
+- runFlow:
+    file: ../../../flows/login/common/login_fill_form.yaml
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_fill_form.yaml
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_tap_to_pay.yaml
+    env:
+      PROCEED_TO_PAYMENT: true
