@@ -1,5 +1,5 @@
 appId: com.saucelabs.mydemoapp.rn
-name: Checkout Smoke Test full 
+name: Flow - Checkout Smoke Test full - Step by step until order confirmation
 tags:
   - checkout
   - smoke
@@ -17,6 +17,12 @@ tags:
 - runFlow:
     file: ../../../flows/checkout/common/checkout_fill_form.yaml
 - runFlow:
-    file: ../../../flows/checkout/common/checkout_tap_to_pay.yaml
+    file: ../../../flows/checkout/common/checkout_buttons.yaml
     env:
       PROCEED_TO_PAYMENT: true
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_fill_payment_method.yaml
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_buttons.yaml
+    env:
+      PROCEED_TO_REVIEW_ORDER: true
