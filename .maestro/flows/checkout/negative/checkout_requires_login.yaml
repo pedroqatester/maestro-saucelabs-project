@@ -1,5 +1,5 @@
 appId: com.saucelabs.mydemoapp.rn
-name: Checkout Negative Test - Requires Login before buying
+name: Flow - Checkout Negative Test - Requires Login before buying
 tags:
   - checkout
   - negative
