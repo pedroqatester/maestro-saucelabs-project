@@ -1,0 +1,27 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Fill Login Form
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Username input field"
+      - inputText: "${MAESTRO_USERNAME}"
+      - tapOn: "Password input field"
+      - inputText: "${MAESTRO_PASSWORD}"
+      - tapOn: "Login button"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          id: "Username input field"
+      - inputText: "${MAESTRO_USERNAME}"
+      - tapOn:
+          id: "Password input field"
+      - inputText: "${MAESTRO_PASSWORD}"
+      - tapOn:
+          point: "50%,30%"
+      - tapOn:
+          text: "Login"
+          index: 1

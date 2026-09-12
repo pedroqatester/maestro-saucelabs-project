@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Validate Login Screen
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - assertVisible: "Username input field"
+      - assertVisible: "Login button"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertVisible:
+          id: "Username input field"
+      - assertVisible:
+          id: "Login button"
