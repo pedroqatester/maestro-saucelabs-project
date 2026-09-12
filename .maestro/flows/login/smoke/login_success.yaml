@@ -1,4 +1,5 @@
 appId: com.saucelabs.mydemoapp.rn
+name: Flow - Login Success
 tags:
   - login
   - smoke
