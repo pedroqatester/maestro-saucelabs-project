@@ -1,0 +1,28 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Flow - Catalog Smoke Test - Browse and Add to Cart Guest
+tags:
+  - catalog
+  - smoke
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: ../../../commands/add_product_to_cart.yaml
+    env:
+      PRODUCT_NAME: "Sauce Labs Backpack"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: "cart badge"
+      - assertVisible: "Sauce Labs Backpack"
+      - assertVisible: "My Cart"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "1"
+          index: 1
+      - assertVisible: "Sauce Labs Backpack"
+      - assertVisible: "My Cart"

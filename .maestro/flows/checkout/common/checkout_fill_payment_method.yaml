@@ -1,0 +1,25 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Fill Checkout Payment Method
+tags:
+  - common
+---
+- assertVisible: "Checkout"
+- assertVisible: "Enter a payment method"
+
+- assertVisible: "Full Name*"
+- tapOn: "Rebecca Winter"
+- inputText: "Pedro"
+- tapOn: "Card"
+- assertVisible: "Card Number*"
+- tapOn: "3258 1265 7568 789"
+- inputText: "${MAESTRO_CARD_NUMBER}"
+- tapOn: "Card"
+- assertVisible: "Security Code*"
+- tapOn: "123"
+- inputText: "${MAESTRO_CARD_CVV}"
+- tapOn: "Card"
+- assertVisible: "Expiration Date*"
+- tapOn: "03/25"
+- inputText: "${MAESTRO_CARD_EXPIRATION}"
+- tapOn:
+      point: "90%,90%"

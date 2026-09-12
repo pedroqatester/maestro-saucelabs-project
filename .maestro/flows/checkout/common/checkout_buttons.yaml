@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Checkout Buttons to use in Checkout Flow
+tags:
+  - common
+---
+- runFlow:
+    when:
+      true: "${PROCEED_TO_PAYMENT}"
+    commands:
+      - tapOn: "To Payment"
+      - assertNotVisible: "To Payment button"
+- runFlow:
+    when:
+      true: "${PROCEED_TO_REVIEW_ORDER}"
+    commands:
+      - tapOn: "Review Order"
+      - assertNotVisible: "Review Order"
