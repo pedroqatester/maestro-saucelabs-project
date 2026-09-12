@@ -1,5 +1,7 @@
 appId: com.saucelabs.mydemoapp.rn
 name: Subflow - Validate Login Screen
+tags:
+  - common
 ---
 - runFlow:
     when:
