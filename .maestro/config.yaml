@@ -1,3 +1,5 @@
 appId: com.saucelabs.mydemoapp.rn
 flows:
   - "flows/**"
+excludeTags:
+  - common
