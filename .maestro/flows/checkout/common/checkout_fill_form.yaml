@@ -1,5 +1,7 @@
 appId: com.saucelabs.mydemoapp.rn
 name: Subflow - Fill Checkout Form
+tags:
+  - common
 ---
 - assertVisible: "Checkout"
 - assertVisible: "Enter a shipping address"
