@@ -1,4 +1,5 @@
 appId: com.saucelabs.mydemoapp.rn
+name: Checkout Negative Test - Requires Login before buying
 tags:
   - checkout
   - negative
@@ -12,4 +13,4 @@ tags:
 - runFlow:
     file: ../../../commands/proceed_to_checkout.yaml
 - runFlow:
-    file: ../../../commands/login_inputs.yaml
+    file: ../../../flows/login/common/login_screen.yaml
