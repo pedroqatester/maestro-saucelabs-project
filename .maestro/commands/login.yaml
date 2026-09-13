@@ -9,6 +9,7 @@ appId: com.saucelabs.mydemoapp.rn
         - tapOn: "Log In"
         - tapOn: "Username input field"
         - inputText: "${MAESTRO_USERNAME}"
+        - inputText: "${MAESTRO_EMAIL_DOMAIN}"
         - tapOn: "Password input field"
         - inputText: "${MAESTRO_PASSWORD}"
         - tapOn: "Login button"
@@ -20,6 +21,7 @@ appId: com.saucelabs.mydemoapp.rn
         - tapOn:
             id: "Username input field"
         - inputText: "${MAESTRO_USERNAME}"
+        - inputText: "${MAESTRO_EMAIL_DOMAIN}"
         - tapOn:
             id: "Password input field"
         - inputText: "${MAESTRO_PASSWORD}"

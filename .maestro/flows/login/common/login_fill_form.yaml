@@ -9,6 +9,7 @@ tags:
     commands:
       - tapOn: "Username input field"
       - inputText: "${MAESTRO_USERNAME}"
+      - inputText: "${MAESTRO_EMAIL_DOMAIN}"
       - tapOn: "Password input field"
       - inputText: "${MAESTRO_PASSWORD}"
       - tapOn: "Login button"
@@ -19,6 +20,7 @@ tags:
       - tapOn:
           id: "Username input field"
       - inputText: "${MAESTRO_USERNAME}"
+      - inputText: "${MAESTRO_EMAIL_DOMAIN}"
       - tapOn:
           id: "Password input field"
       - inputText: "${MAESTRO_PASSWORD}"
