@@ -4,21 +4,28 @@ set -e
 # Aguarda o emulador conectar
 adb wait-for-device
 
-# Aguarda o boot completo do Android (sys.boot_completed = 1)
+# Aguarda o boot completo
 echo "Waiting for Android boot to complete..."
 while [ "$(adb shell getprop sys.boot_completed 2>/dev/null)" != "1" ]; do
   sleep 3
 done
 echo "Boot completed."
 
-# Aguarda mais 5 segundos pra garantir que os serviços subiram
-sleep 5
+# Aguarda o System UI estar pronto
+echo "Waiting for System UI..."
+while [ "$(adb shell dumpsys activity | grep -c 'mHeavyWeightProcess')" = "0" ]; do
+  sleep 2
+done
+
+# Aguarda o package manager estar pronto
+adb shell pm path com.android.systemui > /dev/null 2>&1 || true
+sleep 15
 
 adb install app.apk
 
-adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
-sleep 5
-adb exec-out screencap -p > /tmp/screen.png
+# Descarta qualquer dialog de ANR que apareça
+adb shell input keyevent 4 || true
+sleep 3
 
 maestro test .maestro \
   --include-tags=smoke \

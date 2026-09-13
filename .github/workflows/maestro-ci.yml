@@ -27,9 +27,8 @@ jobs:
 
       - name: Download APK
         run: |
-          curl -v -L -o app.apk \
+          curl -L -o app.apk \
             "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
-          file app.apk
 
       - name: Run Android smoke tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -37,7 +36,6 @@ jobs:
           api-level: 30
           arch: x86_64
           script: bash run_ci_android.sh
-
 
       - name: Upload Android test report
         if: always()
@@ -94,6 +92,8 @@ jobs:
           defaults write com.apple.iphonesimulator KeyboardAssistant -bool false
 
       - name: Run iOS smoke tests
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
         run: |
           maestro test .maestro \
             --device $IOS_UDID \
@@ -108,7 +108,6 @@ jobs:
             -e MAESTRO_CARD_NUMBER=${{ secrets.MAESTRO_CARD_NUMBER }} \
             -e MAESTRO_CARD_EXPIRATION=${{ secrets.MAESTRO_CARD_EXPIRATION }} \
             -e MAESTRO_CARD_CVV=${{ secrets.MAESTRO_CARD_CVV }}
-            
 
       - name: Upload iOS test report
         if: always()
@@ -117,10 +116,9 @@ jobs:
           name: report-ios
           path: report-ios.xml
 
-      - name: Run iOS smoke tests
-        env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
-        run: |
-          maestro test .maestro \
-            --device $IOS_UDID \
-            ...
+      - name: Upload Maestro debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-ios-debug
+          path: ~/.maestro/tests/
