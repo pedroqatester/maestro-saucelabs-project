@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e
 
+# Aguarda o emulador conectar
+adb wait-for-device
+
+# Aguarda o boot completo do Android (sys.boot_completed = 1)
+echo "Waiting for Android boot to complete..."
+while [ "$(adb shell getprop sys.boot_completed 2>/dev/null)" != "1" ]; do
+  sleep 3
+done
+echo "Boot completed."
+
+# Aguarda mais 5 segundos pra garantir que os serviços subiram
+sleep 5
+
 adb install app.apk
 
 maestro test .maestro \
