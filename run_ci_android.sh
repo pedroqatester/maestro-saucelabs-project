@@ -16,6 +16,10 @@ sleep 5
 
 adb install app.apk
 
+adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
+sleep 5
+adb exec-out screencap -p > /tmp/screen.png
+
 maestro test .maestro \
   --include-tags=smoke \
   --format junit \

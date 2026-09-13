@@ -46,6 +46,13 @@ jobs:
           name: report-android
           path: report-android.xml
 
+      - name: Upload debug screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-screenshot
+          path: /tmp/screen.png
+
   ios:
     name: iOS - Smoke Tests
     runs-on: macos-15
@@ -74,6 +81,7 @@ jobs:
           UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-18-6")
           xcrun simctl boot $UDID
           echo "IOS_UDID=$UDID" >> $GITHUB_ENV
+          sleep 30
 
       - name: Install app on simulator
         run: |
@@ -108,3 +116,11 @@ jobs:
         with:
           name: report-ios
           path: report-ios.xml
+
+      - name: Run iOS smoke tests
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
+        run: |
+          maestro test .maestro \
+            --device $IOS_UDID \
+            ...
