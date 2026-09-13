@@ -71,7 +71,7 @@ jobs:
 
       - name: Boot iOS simulator
         run: |
-          UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-26-4")
+          UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-18-6")
           xcrun simctl boot $UDID
           echo "IOS_UDID=$UDID" >> $GITHUB_ENV
 
