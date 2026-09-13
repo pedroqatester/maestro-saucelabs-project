@@ -77,6 +77,11 @@ jobs:
             "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/iOS-Simulator-MyRNDemoApp.1.3.0-162.zip"
           unzip MyRNDemoApp.zip
 
+      - name: List available runtimes
+        run: |
+          xcrun simctl list runtimes
+          xcrun simctl list devicetypes | grep "iPhone 14 Pro"
+
       - name: Boot iOS simulator
         run: |
           UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-18-4")
