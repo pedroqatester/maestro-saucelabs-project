@@ -27,8 +27,9 @@ jobs:
 
       - name: Download APK
         run: |
-          curl -L -o app.apk \
+          curl -v -L -o app.apk \
             "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
+          file app.apk
 
       - name: Run Android smoke tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -78,7 +79,7 @@ jobs:
 
       - name: Boot iOS simulator
         run: |
-          UDID=$(xcrun simctl create "iPhone 14 Pro" "iPhone 14 Pro" iOS16.4)
+          UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-18-4")
           xcrun simctl boot $UDID
           echo "IOS_UDID=$UDID" >> $GITHUB_ENV
 
