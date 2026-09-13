@@ -6,6 +6,9 @@ tags:
 ---
 - launchApp:
     clearState: true
+- extendedWaitUntil:
+    visible: "Catalog"
+    timeout: 30000
 - runFlow:
     file: ../../../commands/add_product_to_cart.yaml
     env:

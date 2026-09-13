@@ -6,6 +6,9 @@ tags:
 ---
 - launchApp:
     clearState: true
+- extendedWaitUntil:
+    visible: "Catalog"
+    timeout: 30000
 - runFlow:
     file: ../../../commands/login.yaml
     env:
