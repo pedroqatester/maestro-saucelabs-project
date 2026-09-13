@@ -1,32 +1,13 @@
 #!/bin/bash
 set -e
 
-# Aguarda o emulador conectar
-adb wait-for-device
+echo "Installing APK..."
+adb install -r app.apk
 
-# Aguarda o boot completo
-echo "Waiting for Android boot to complete..."
-while [ "$(adb shell getprop sys.boot_completed 2>/dev/null)" != "1" ]; do
-  sleep 3
-done
-echo "Boot completed."
-
-# Aguarda o System UI estar pronto
-echo "Waiting for System UI..."
-while [ "$(adb shell dumpsys activity | grep -c 'mHeavyWeightProcess')" = "0" ]; do
-  sleep 2
-done
-
-# Aguarda o package manager estar pronto
-adb shell pm path com.android.systemui > /dev/null 2>&1 || true
+echo "Waiting for app to settle..."
 sleep 15
 
-adb install app.apk
-
-# Descarta qualquer dialog de ANR que apareça
-adb shell input keyevent 4 || true
-sleep 3
-
+echo "Running Maestro tests..."
 maestro test .maestro \
   --include-tags=smoke \
   --format junit \
