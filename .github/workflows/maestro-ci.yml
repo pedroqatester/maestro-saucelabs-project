@@ -28,7 +28,7 @@ jobs:
       - name: Download APK
         run: |
           curl -L -o app.apk \
-            "https://github.com/saucelabs/my-demo-app-rn/releases/latest/download/Android-MyRNDemoApp.apk"
+            "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
 
       - name: Run Android smoke tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -41,10 +41,15 @@ jobs:
               --include-tags=smoke \
               --format junit \
               --output report-android.xml \
-              -e MAESTRO_USERNAME=${{ secrets.MAESTRO_USERNAME }} \
-              -e MAESTRO_PASSWORD=${{ secrets.MAESTRO_PASSWORD }} \
-              -e MAESTRO_LOCKED_USERNAME=${{ secrets.MAESTRO_LOCKED_USERNAME }} \
-              -e MAESTRO_LOCKED_PASSWORD=${{ secrets.MAESTRO_LOCKED_PASSWORD }}
+            -e MAESTRO_USERNAME=${{ secrets.MAESTRO_USERNAME }} \
+            -e MAESTRO_PASSWORD=${{ secrets.MAESTRO_PASSWORD }} \
+            -e MAESTRO_LOCKED_USERNAME=${{ secrets.MAESTRO_LOCKED_USERNAME }} \
+            -e MAESTRO_LOCKED_PASSWORD=${{ secrets.MAESTRO_LOCKED_PASSWORD }} \
+            -e MAESTRO_EMAIL_DOMAIN=${{ secrets.MAESTRO_EMAIL_DOMAIN }} \
+            -e MAESTRO_CARD_NUMBER=${{ secrets.MAESTRO_CARD_NUMBER }} \
+            -e MAESTRO_CARD_EXPIRATION=${{ secrets.MAESTRO_CARD_EXPIRATION }} \
+            -e MAESTRO_CARD_CVV=${{ secrets.MAESTRO_CARD_CVV }}
+
 
       - name: Upload Android test report
         if: always()
@@ -68,7 +73,7 @@ jobs:
       - name: Download iOS app
         run: |
           curl -L -o MyRNDemoApp.zip \
-            "https://github.com/saucelabs/my-demo-app-rn/releases/latest/download/iOS-Simulator-MyRNDemoApp.zip"
+            "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/iOS-Simulator-MyRNDemoApp.1.3.0-162.zip"
           unzip MyRNDemoApp.zip
 
       - name: Boot iOS simulator
