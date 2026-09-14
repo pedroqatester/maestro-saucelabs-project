@@ -9,7 +9,7 @@ tags:
 - extendedWaitUntil:
     visible: "Products"
     timeout: 50000
-- wait: 3000
+- waitForAnimationToEnd
 - runFlow:
     file: ../../../commands/login.yaml
     env:
