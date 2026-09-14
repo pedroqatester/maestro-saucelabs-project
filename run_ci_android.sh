@@ -5,7 +5,7 @@ echo "Installing APK..."
 adb install -r app.apk
 
 echo "Waiting for app to settle..."
-sleep 15
+sleep 60
 
 echo "Capturing debug screenshot..."
 adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
