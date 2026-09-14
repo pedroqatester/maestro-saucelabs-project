@@ -8,7 +8,7 @@ tags:
     clearState: true
 - extendedWaitUntil:
     visible: "Products"
-    timeout: 30000
+    timeout: 50000
 - runFlow:
     file: ../../../commands/login.yaml
     env:

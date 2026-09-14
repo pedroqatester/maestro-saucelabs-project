@@ -7,6 +7,11 @@ adb install -r app.apk
 echo "Waiting for app to settle..."
 sleep 15
 
+echo "Capturing debug screenshot..."
+adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
+sleep 5
+adb exec-out screencap -p > /tmp/screen.png
+
 echo "Running Maestro tests..."
 maestro test .maestro \
   --include-tags=smoke \
