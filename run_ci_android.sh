@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 echo "Installing APK..."
 adb install -r app.apk
 
