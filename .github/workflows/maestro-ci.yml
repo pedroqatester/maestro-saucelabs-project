@@ -53,6 +53,13 @@ jobs:
           name: android-debug-screenshot
           path: /tmp/screen.png
 
+      - name: Upload logcat
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-logcat
+          path: /tmp/logcat.txt
+
   ios:
     name: iOS - Smoke Tests
     runs-on: macos-15

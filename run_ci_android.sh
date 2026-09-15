@@ -8,6 +8,10 @@ echo "Pre-launching app to warm up..."
 adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
 sleep 30
 
+echo "Checking app state..."
+adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedActivity" || true
+adb logcat -d | grep -E "ReactNative|Hermes|AppRegistry|ERROR" | tail -30 || true
+
 echo "Capturing debug screenshot..."
 adb exec-out screencap -p > /tmp/screen.png
 
