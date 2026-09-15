@@ -1,15 +1,11 @@
-#!/bin/bash
-set -e
-
 echo "Installing APK..."
 adb install -r app.apk
 
-echo "Waiting for app to settle..."
-sleep 60
+echo "Pre-launching app to warm up..."
+adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
+sleep 30
 
 echo "Capturing debug screenshot..."
-adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
-sleep 5
 adb exec-out screencap -p > /tmp/screen.png
 
 echo "Running Maestro tests..."
