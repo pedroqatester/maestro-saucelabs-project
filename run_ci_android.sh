@@ -1,24 +1,25 @@
 #!/bin/bash
+
 set -e
 
 echo "Installing APK..."
+
 adb install -r app.apk
 
-echo "Pre-launching app to warm up..."
-adb shell am start -n com.saucelabs.mydemoapp.rn/.MainActivity
-sleep 30
+echo "Waiting for emulator..."
 
-echo "Checking app state..."
-adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedActivity" || true
-adb logcat -d | grep -E "ReactNative|Hermes|AppRegistry|ERROR" | tail -30 || true
+adb wait-for-device
 
-echo "Capturing debug screenshot..."
-adb exec-out screencap -p > /tmp/screen.png
+adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
 
-echo "Capturing Maestro hierarchy..."
-maestro hierarchy > /tmp/maestro-hierarchy.txt || true
+echo "Android environment:"
+adb shell getprop ro.build.version.sdk
+adb shell getprop ro.build.version.release
+adb shell getprop ro.product.model
+adb shell getprop ro.product.cpu.abi
 
 echo "Running Maestro tests..."
+
 maestro test .maestro \
   --include-tags=smoke \
   --format junit \
