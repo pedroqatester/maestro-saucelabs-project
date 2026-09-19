@@ -12,6 +12,8 @@ appId: com.saucelabs.mydemoapp.rn
         - inputText: "${MAESTRO_EMAIL_DOMAIN}"
         - tapOn: "Password input field"
         - inputText: "${MAESTRO_PASSWORD}"
+        - hideKeyboard
+        - assertVisible: "Login button"
         - tapOn: "Login button"
 - runFlow:
     when:
