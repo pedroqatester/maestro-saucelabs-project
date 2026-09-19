@@ -15,6 +15,9 @@ adb logcat -d | grep -E "ReactNative|Hermes|AppRegistry|ERROR" | tail -30 || tru
 echo "Capturing debug screenshot..."
 adb exec-out screencap -p > /tmp/screen.png
 
+echo "Capturing Maestro hierarchy..."
+maestro hierarchy > /tmp/maestro-hierarchy.txt || true
+
 echo "Running Maestro tests..."
 maestro test .maestro \
   --include-tags=smoke \

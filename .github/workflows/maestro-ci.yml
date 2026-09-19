@@ -21,6 +21,13 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Upload Maestro hierarchy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-hierarchy
+          path: /tmp/maestro-hierarchy.txt
+
       - name: Install Maestro CLI
         run: |
           curl -Ls "https://get.maestro.mobile.dev" | bash
