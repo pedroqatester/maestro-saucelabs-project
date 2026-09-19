@@ -3,6 +3,8 @@ name: Subflow - Fill Checkout Payment Method
 tags:
   - common
 ---
+- takeScreenshot:
+    path: checkout-before-assert
 - extendedWaitUntil:
     visible: "Checkout"
     timeout: 30000
