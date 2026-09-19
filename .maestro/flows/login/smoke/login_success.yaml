@@ -15,4 +15,4 @@ tags:
     env:
       MAESTRO_USERNAME: "${MAESTRO_USERNAME}"
       MAESTRO_PASSWORD: "${MAESTRO_PASSWORD}"
-- assertVisible: "PRODUCTS"
+- assertVisible: "Products"

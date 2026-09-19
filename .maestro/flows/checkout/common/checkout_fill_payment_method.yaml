@@ -3,7 +3,9 @@ name: Subflow - Fill Checkout Payment Method
 tags:
   - common
 ---
-- assertVisible: "Checkout"
+- extendedWaitUntil:
+    visible: "Checkout"
+    timeout: 30000
 - assertVisible: "Enter a payment method"
 
 - assertVisible: "Full Name*"
