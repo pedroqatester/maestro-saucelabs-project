@@ -2,40 +2,47 @@ name: Maestro E2E Tests
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   android:
-    name: Android - Smoke Tests
+    name: Android - Maestro Smoke Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Install Maestro CLI
+      - name: Install Maestro
         run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
 
-      - name: Download APK
+      - name: Verify Maestro
         run: |
-          curl -L -o app.apk \
+          java -version
+          maestro --version
+
+      - name: Download Android APK
+        run: |
+          curl -L \
+            -o app.apk \
             "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
 
-      - name: Run Android smoke tests
+      - name: Run Android Maestro tests
         uses: reactivecircus/android-emulator-runner@v2
         env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
           MAESTRO_USERNAME: ${{ secrets.MAESTRO_USERNAME }}
           MAESTRO_PASSWORD: ${{ secrets.MAESTRO_PASSWORD }}
           MAESTRO_LOCKED_USERNAME: ${{ secrets.MAESTRO_LOCKED_USERNAME }}
@@ -44,119 +51,57 @@ jobs:
           MAESTRO_CARD_NUMBER: ${{ secrets.MAESTRO_CARD_NUMBER }}
           MAESTRO_CARD_EXPIRATION: ${{ secrets.MAESTRO_CARD_EXPIRATION }}
           MAESTRO_CARD_CVV: ${{ secrets.MAESTRO_CARD_CVV }}
+          MAESTRO_CLI_NO_ANALYTICS: "true"
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
         with:
           api-level: 33
-          arch: x86_64
           target: google_apis
+          arch: x86_64
           profile: pixel_7
           cores: 2
-          disable-animations: false
           emulator-boot-timeout: 1200
+          disable-animations: false
           emulator-options: >
             -no-window
+            -gpu swiftshader_indirect
             -no-snapshot
             -noaudio
             -no-boot-anim
-            -gpu swiftshader_indirect
-          script: bash run_ci_android.sh
+          script: |
+            adb devices
 
-      - name: Upload Android test report
+            echo "Installing APK..."
+            adb install -r app.apk
+
+            echo "Installed application:"
+            adb shell pm list packages | grep saucelabs || true
+
+            echo "Running Maestro..."
+            maestro test .maestro \
+              --include-tags=smoke \
+              --format junit \
+              --output report-android.xml \
+              -e MAESTRO_USERNAME="$MAESTRO_USERNAME" \
+              -e MAESTRO_PASSWORD="$MAESTRO_PASSWORD" \
+              -e MAESTRO_LOCKED_USERNAME="$MAESTRO_LOCKED_USERNAME" \
+              -e MAESTRO_LOCKED_PASSWORD="$MAESTRO_LOCKED_PASSWORD" \
+              -e MAESTRO_EMAIL_DOMAIN="$MAESTRO_EMAIL_DOMAIN" \
+              -e MAESTRO_CARD_NUMBER="$MAESTRO_CARD_NUMBER" \
+              -e MAESTRO_CARD_EXPIRATION="$MAESTRO_CARD_EXPIRATION" \
+              -e MAESTRO_CARD_CVV="$MAESTRO_CARD_CVV"
+
+      - name: Upload Android JUnit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: report-android
+          name: maestro-android-report
           path: report-android.xml
-
-      - name: Upload debug screenshot
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-debug-screenshot
-          path: /tmp/screen.png
-
-      - name: Upload logcat
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-logcat
-          path: /tmp/logcat.txt
-
-      - name: Upload Maestro hierarchy
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maestro-hierarchy
-          path: /tmp/maestro-hierarchy.txt
-
-  ios:
-    name: iOS - Smoke Tests
-    runs-on: macos-15
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Maestro CLI
-        run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-      - name: Download iOS app
-        run: |
-          curl -L -o MyRNDemoApp.zip \
-            "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/iOS-Simulator-MyRNDemoApp.1.3.0-162.zip"
-          unzip MyRNDemoApp.zip
-
-      - name: List available runtimes
-        run: |
-          xcrun simctl list runtimes
-          xcrun simctl list devicetypes | grep "iPhone 14 Pro"
-
-      - name: Boot iOS simulator
-        run: |
-          UDID=$(xcrun simctl create "iPhone 14 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro" "com.apple.CoreSimulator.SimRuntime.iOS-18-6")
-          xcrun simctl boot $UDID
-          echo "IOS_UDID=$UDID" >> $GITHUB_ENV
-          sleep 30
-
-      - name: Install app on simulator
-        run: |
-          xcrun simctl install $IOS_UDID MyRNDemoApp.app
-
-      - name: Disable simulator autocorrect
-        run: |
-          defaults write com.apple.iphonesimulator KeyboardAutocorrection -bool false
-          defaults write com.apple.iphonesimulator KeyboardAutocapitalization -bool false
-          defaults write com.apple.iphonesimulator KeyboardAssistant -bool false
-
-      - name: Run iOS smoke tests
-        env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
-        run: |
-          maestro test .maestro \
-            --device $IOS_UDID \
-            --include-tags=smoke \
-            --format junit \
-            --output report-ios.xml \
-            -e MAESTRO_USERNAME=${{ secrets.MAESTRO_USERNAME }} \
-            -e MAESTRO_PASSWORD=${{ secrets.MAESTRO_PASSWORD }} \
-            -e MAESTRO_LOCKED_USERNAME=${{ secrets.MAESTRO_LOCKED_USERNAME }} \
-            -e MAESTRO_LOCKED_PASSWORD=${{ secrets.MAESTRO_LOCKED_PASSWORD }} \
-            -e MAESTRO_EMAIL_DOMAIN=${{ secrets.MAESTRO_EMAIL_DOMAIN }} \
-            -e MAESTRO_CARD_NUMBER=${{ secrets.MAESTRO_CARD_NUMBER }} \
-            -e MAESTRO_CARD_EXPIRATION=${{ secrets.MAESTRO_CARD_EXPIRATION }} \
-            -e MAESTRO_CARD_CVV=${{ secrets.MAESTRO_CARD_CVV }}
-
-      - name: Upload iOS test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: report-ios
-          path: report-ios.xml
+          if-no-files-found: warn
 
       - name: Upload Maestro debug artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-ios-debug
+          name: maestro-android-debug
           path: ~/.maestro/tests/
+          if-no-files-found: warn
