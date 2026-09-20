@@ -1,101 +1,79 @@
-name: Maestro E2E Tests
+android:
+  name: Android - Maestro Smoke Tests
+  runs-on: ubuntu-latest
+  timeout-minutes: 45
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-jobs:
-  android:
-    name: Android - Maestro Smoke Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "17"
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Install Maestro
+      run: |
+        curl -fsSL "https://get.maestro.mobile.dev" | bash
+        echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
+    - name: Verify Maestro
+      run: |
+        java -version
+        maestro --version
 
-      - name: Install Maestro
-        run: |
-          curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+    - name: Download Android APK
+      run: |
+        curl -L \
+          -o app.apk \
+          "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
 
-      - name: Verify Maestro
-        run: |
-          java -version
-          maestro --version
+    - name: Run Android Maestro tests
+      uses: reactivecircus/android-emulator-runner@v2
+      env:
+        MAESTRO_USERNAME: ${{ secrets.MAESTRO_USERNAME }}
+        MAESTRO_PASSWORD: ${{ secrets.MAESTRO_PASSWORD }}
+        MAESTRO_LOCKED_USERNAME: ${{ secrets.MAESTRO_LOCKED_USERNAME }}
+        MAESTRO_LOCKED_PASSWORD: ${{ secrets.MAESTRO_LOCKED_PASSWORD }}
+        MAESTRO_EMAIL_DOMAIN: ${{ secrets.MAESTRO_EMAIL_DOMAIN }}
+        MAESTRO_CARD_NUMBER: ${{ secrets.MAESTRO_CARD_NUMBER }}
+        MAESTRO_CARD_EXPIRATION: ${{ secrets.MAESTRO_CARD_EXPIRATION }}
+        MAESTRO_CARD_CVV: ${{ secrets.MAESTRO_CARD_CVV }}
+        MAESTRO_CLI_NO_ANALYTICS: "true"
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
+      with:
+        api-level: 33
+        target: google_apis
+        arch: x86_64
+        profile: pixel_7
+        cores: 2
+        emulator-boot-timeout: 1200
+        disable-animations: false
 
-      - name: Download Android APK
-        run: |
-          curl -L \
-            -o app.apk \
-            "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
+        script: |
+          echo "Installing APK..."
+          adb install -r app.apk
 
-      - name: Run Android Maestro tests
-        uses: reactivecircus/android-emulator-runner@v2
-        env:
-          MAESTRO_USERNAME: ${{ secrets.MAESTRO_USERNAME }}
-          MAESTRO_PASSWORD: ${{ secrets.MAESTRO_PASSWORD }}
-          MAESTRO_LOCKED_USERNAME: ${{ secrets.MAESTRO_LOCKED_USERNAME }}
-          MAESTRO_LOCKED_PASSWORD: ${{ secrets.MAESTRO_LOCKED_PASSWORD }}
-          MAESTRO_EMAIL_DOMAIN: ${{ secrets.MAESTRO_EMAIL_DOMAIN }}
-          MAESTRO_CARD_NUMBER: ${{ secrets.MAESTRO_CARD_NUMBER }}
-          MAESTRO_CARD_EXPIRATION: ${{ secrets.MAESTRO_CARD_EXPIRATION }}
-          MAESTRO_CARD_CVV: ${{ secrets.MAESTRO_CARD_CVV }}
-          MAESTRO_CLI_NO_ANALYTICS: "true"
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          profile: pixel_7
-          cores: 2
-          emulator-boot-timeout: 1200
-          disable-animations: false
-          script: |
-            adb devices
+          echo "Installed application:"
+          adb shell pm list packages | grep saucelabs || true
 
-            echo "Installing APK..."
-            adb install -r app.apk
+          echo "Running Maestro..."
 
-            echo "Installed application:"
-            adb shell pm list packages | grep saucelabs || true
+          maestro test .maestro --include-tags=smoke --format junit --output report-android.xml -e MAESTRO_USERNAME="$MAESTRO_USERNAME" -e MAESTRO_PASSWORD="$MAESTRO_PASSWORD" -e MAESTRO_LOCKED_USERNAME="$MAESTRO_LOCKED_USERNAME" -e MAESTRO_LOCKED_PASSWORD="$MAESTRO_LOCKED_PASSWORD" -e MAESTRO_EMAIL_DOMAIN="$MAESTRO_EMAIL_DOMAIN" -e MAESTRO_CARD_NUMBER="$MAESTRO_CARD_NUMBER" -e MAESTRO_CARD_EXPIRATION="$MAESTRO_CARD_EXPIRATION" -e MAESTRO_CARD_CVV="$MAESTRO_CARD_CVV"
 
-            echo "Running Maestro..."
-            maestro test .maestro \
-              --include-tags=smoke \
-              --format junit \
-              --output report-android.xml \
-              -e MAESTRO_USERNAME="$MAESTRO_USERNAME" \
-              -e MAESTRO_PASSWORD="$MAESTRO_PASSWORD" \
-              -e MAESTRO_LOCKED_USERNAME="$MAESTRO_LOCKED_USERNAME" \
-              -e MAESTRO_LOCKED_PASSWORD="$MAESTRO_LOCKED_PASSWORD" \
-              -e MAESTRO_EMAIL_DOMAIN="$MAESTRO_EMAIL_DOMAIN" \
-              -e MAESTRO_CARD_NUMBER="$MAESTRO_CARD_NUMBER" \
-              -e MAESTRO_CARD_EXPIRATION="$MAESTRO_CARD_EXPIRATION" \
-              -e MAESTRO_CARD_CVV="$MAESTRO_CARD_CVV"
+    - name: Upload Android JUnit report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maestro-android-report
+        path: report-android.xml
+        if-no-files-found: warn
 
-      - name: Upload Android JUnit report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maestro-android-report
-          path: report-android.xml
-          if-no-files-found: warn
-
-      - name: Upload Maestro debug artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maestro-android-debug
-          path: ~/.maestro/tests/
-          if-no-files-found: warn
+    - name: Upload Maestro debug artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maestro-android-debug
+        path: ~/.maestro/tests/
+        if-no-files-found: warn
