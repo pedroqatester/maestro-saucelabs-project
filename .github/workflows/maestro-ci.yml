@@ -1,4 +1,15 @@
-android:
+name: Maestro E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  android:
   name: Android - Maestro Smoke Tests
   runs-on: ubuntu-latest
   timeout-minutes: 45
