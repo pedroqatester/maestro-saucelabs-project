@@ -50,7 +50,8 @@ jobs:
           target: google_apis
           profile: pixel_7
           cores: 2
-          disable-animations: true
+          disable-animations: false
+          emulator-boot-timeout: 1200
           emulator-options: >
             -no-window
             -no-snapshot
