@@ -3,13 +3,12 @@
 set -e
 
 echo "Installing APK..."
-
 adb install -r app.apk
 
 echo "Waiting for emulator..."
-
 adb wait-for-device
 
+echo "Waiting for Android boot..."
 adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
 
 echo "Android environment:"
@@ -17,6 +16,12 @@ adb shell getprop ro.build.version.sdk
 adb shell getprop ro.build.version.release
 adb shell getprop ro.product.model
 adb shell getprop ro.product.cpu.abi
+adb shell getprop ro.product.name
+adb shell getprop ro.product.device
+
+echo "Checking emulator..."
+adb shell getprop sys.boot_completed
+adb shell get-state
 
 echo "Running Maestro tests..."
 
