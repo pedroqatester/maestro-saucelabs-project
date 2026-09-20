@@ -60,8 +60,8 @@ jobs:
           profile: pixel_7
           cores: 2
           emulator-boot-timeout: 1200
-          disable-animations: false
-
+          emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
+          
           script: |
             echo "Installing APK..."
             adb install -r app.apk
