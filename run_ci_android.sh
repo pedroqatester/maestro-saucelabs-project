@@ -21,7 +21,6 @@ adb shell getprop ro.product.device
 
 echo "Checking emulator..."
 adb shell getprop sys.boot_completed
-adb shell get-state
 
 echo "Running Maestro tests..."
 
