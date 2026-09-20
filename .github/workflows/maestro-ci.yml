@@ -61,12 +61,6 @@ jobs:
           cores: 2
           emulator-boot-timeout: 1200
           disable-animations: false
-          emulator-options: >
-            -no-window
-            -gpu swiftshader_indirect
-            -no-snapshot
-            -noaudio
-            -no-boot-anim
           script: |
             adb devices
 
