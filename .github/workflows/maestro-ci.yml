@@ -2,83 +2,45 @@ name: Maestro E2E Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   android:
-    name: Android - Maestro Smoke Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-
+    name: Android - Smoke Tests
+    runs-on: macos-latest
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Install Maestro
+      - name: Install Maestro CLI
         run: |
-          curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: Download Android APK
+      - name: Download APK
         run: |
-          curl -L \
-            -o app.apk \
+          curl -L -o app.apk \
             "https://github.com/saucelabs/my-demo-app-rn/releases/download/v1.3.0/Android-MyDemoAppRN.1.3.0.build-244.apk"
 
-      - name: Run Android Maestro tests
+      - name: Run Android smoke tests
         uses: reactivecircus/android-emulator-runner@v2
-        env:
-          MAESTRO_USERNAME: ${{ secrets.MAESTRO_USERNAME }}
-          MAESTRO_PASSWORD: ${{ secrets.MAESTRO_PASSWORD }}
-          MAESTRO_LOCKED_USERNAME: ${{ secrets.MAESTRO_LOCKED_USERNAME }}
-          MAESTRO_LOCKED_PASSWORD: ${{ secrets.MAESTRO_LOCKED_PASSWORD }}
-          MAESTRO_EMAIL_DOMAIN: ${{ secrets.MAESTRO_EMAIL_DOMAIN }}
-          MAESTRO_CARD_NUMBER: ${{ secrets.MAESTRO_CARD_NUMBER }}
-          MAESTRO_CARD_EXPIRATION: ${{ secrets.MAESTRO_CARD_EXPIRATION }}
-          MAESTRO_CARD_CVV: ${{ secrets.MAESTRO_CARD_CVV }}
-          MAESTRO_CLI_NO_ANALYTICS: "true"
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
-
         with:
-          api-level: 33
-          target: google_apis_playstore
+          api-level: 29
           arch: x86_64
-          profile: pixel_7
-          cores: 2
-          emulator-boot-timeout: 1200
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: false
+          script: adb install -r app.apk && sleep 15 && maestro test .maestro --include-tags=smoke --format junit --output report-android.xml -e MAESTRO_USERNAME=${{ secrets.MAESTRO_USERNAME }} -e MAESTRO_PASSWORD=${{ secrets.MAESTRO_PASSWORD }} -e MAESTRO_LOCKED_USERNAME=${{ secrets.MAESTRO_LOCKED_USERNAME }} -e MAESTRO_LOCKED_PASSWORD=${{ secrets.MAESTRO_LOCKED_PASSWORD }} -e MAESTRO_EMAIL_DOMAIN=${{ secrets.MAESTRO_EMAIL_DOMAIN }} -e MAESTRO_CARD_NUMBER=${{ secrets.MAESTRO_CARD_NUMBER }} -e MAESTRO_CARD_EXPIRATION=${{ secrets.MAESTRO_CARD_EXPIRATION }} -e MAESTRO_CARD_CVV=${{ secrets.MAESTRO_CARD_CVV }}
 
-          script: |
-            adb install -r app.apk
-
-            maestro test .maestro \
-              --include-tags=smoke \
-              --format junit \
-              --output report-android.xml \
-              -e MAESTRO_USERNAME="$MAESTRO_USERNAME" \
-              -e MAESTRO_PASSWORD="$MAESTRO_PASSWORD" \
-              -e MAESTRO_LOCKED_USERNAME="$MAESTRO_LOCKED_USERNAME" \
-              -e MAESTRO_LOCKED_PASSWORD="$MAESTRO_LOCKED_PASSWORD" \
-              -e MAESTRO_EMAIL_DOMAIN="$MAESTRO_EMAIL_DOMAIN" \
-              -e MAESTRO_CARD_NUMBER="$MAESTRO_CARD_NUMBER" \
-              -e MAESTRO_CARD_EXPIRATION="$MAESTRO_CARD_EXPIRATION" \
-              -e MAESTRO_CARD_CVV="$MAESTRO_CARD_CVV"
-
-      - name: Upload Android JUnit report
+      - name: Upload Android test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-android-report
+          name: report-android
           path: report-android.xml
-          if-no-files-found: warn
