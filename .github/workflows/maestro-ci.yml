@@ -61,7 +61,8 @@ jobs:
           profile: pixel_7
           cores: 2
           emulator-boot-timeout: 1200
-          emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: false
 
           script: |
             echo "Installing APK..."
