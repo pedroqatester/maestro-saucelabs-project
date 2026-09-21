@@ -36,7 +36,7 @@ jobs:
         with:
           api-level: 33
           arch: x86_64
-          profile: pixel_6
+          profile: pixel_7
           script: adb install -r app.apk && sleep 15 && maestro test .maestro --include-tags=smoke --format junit --output report-android.xml -e MAESTRO_USERNAME=${{ secrets.MAESTRO_USERNAME }} -e MAESTRO_PASSWORD=${{ secrets.MAESTRO_PASSWORD }} -e MAESTRO_LOCKED_USERNAME=${{ secrets.MAESTRO_LOCKED_USERNAME }} -e MAESTRO_LOCKED_PASSWORD=${{ secrets.MAESTRO_LOCKED_PASSWORD }} -e MAESTRO_EMAIL_DOMAIN=${{ secrets.MAESTRO_EMAIL_DOMAIN }} -e MAESTRO_CARD_NUMBER=${{ secrets.MAESTRO_CARD_NUMBER }} -e MAESTRO_CARD_EXPIRATION=${{ secrets.MAESTRO_CARD_EXPIRATION }} -e MAESTRO_CARD_CVV=${{ secrets.MAESTRO_CARD_CVV }}
 
       - name: Upload Android test report
