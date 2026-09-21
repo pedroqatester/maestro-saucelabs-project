@@ -53,6 +53,7 @@ jobs:
           MAESTRO_CARD_CVV: ${{ secrets.MAESTRO_CARD_CVV }}
           MAESTRO_CLI_NO_ANALYTICS: "true"
           MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
+
         with:
           api-level: 33
           target: google_apis
@@ -61,7 +62,7 @@ jobs:
           cores: 2
           emulator-boot-timeout: 1200
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim
-          
+
           script: |
             echo "Installing APK..."
             adb install -r app.apk
@@ -69,9 +70,32 @@ jobs:
             echo "Installed application:"
             adb shell pm list packages | grep saucelabs || true
 
+            echo "Launching app directly with ADB..."
+            adb shell monkey -p com.saucelabs.mydemoapp.rn -c android.intent.category.LAUNCHER 1
+
+            echo "Waiting for application..."
+            sleep 15
+
+            echo "Current activity:"
+            adb shell dumpsys activity activities | grep -E "mResumedActivity|mFocusedApp" || true
+
+            echo "Taking screenshot..."
+            adb exec-out screencap -p > android-before-maestro.png
+
+            echo "Recent application errors:"
+            adb logcat -d -t 500 | grep -Ei "AndroidRuntime|FATAL EXCEPTION|com.saucelabs.mydemoapp.rn|ReactNative|SoLoader|libc" || true
+
             echo "Running Maestro..."
 
             maestro test .maestro --include-tags=smoke --format junit --output report-android.xml -e MAESTRO_USERNAME="$MAESTRO_USERNAME" -e MAESTRO_PASSWORD="$MAESTRO_PASSWORD" -e MAESTRO_LOCKED_USERNAME="$MAESTRO_LOCKED_USERNAME" -e MAESTRO_LOCKED_PASSWORD="$MAESTRO_LOCKED_PASSWORD" -e MAESTRO_EMAIL_DOMAIN="$MAESTRO_EMAIL_DOMAIN" -e MAESTRO_CARD_NUMBER="$MAESTRO_CARD_NUMBER" -e MAESTRO_CARD_EXPIRATION="$MAESTRO_CARD_EXPIRATION" -e MAESTRO_CARD_CVV="$MAESTRO_CARD_CVV"
+
+      - name: Upload Android diagnostic screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-before-maestro
+          path: android-before-maestro.png
+          if-no-files-found: warn
 
       - name: Upload Android JUnit report
         if: always()
