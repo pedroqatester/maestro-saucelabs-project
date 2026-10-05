@@ -22,6 +22,7 @@ tags:
 - tapOn: "Card"
 - assertVisible: "Expiration Date*"
 - tapOn: "03/25"
-- inputText: "${MAESTRO_CARD_EXPIRATION}"
+- inputText: "${MAESTRO_CARD_EXPIRATION_MONTH}"
+- inputText: "${MAESTRO_CARD_EXPIRATION_YEAR}"
 - tapOn:
       point: "90%,90%"

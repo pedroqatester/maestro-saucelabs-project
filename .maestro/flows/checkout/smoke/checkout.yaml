@@ -30,3 +30,9 @@ tags:
     file: ../../../flows/checkout/common/checkout_buttons.yaml
     env:
       PROCEED_TO_REVIEW_ORDER: true
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_review-order.yaml
+- runFlow:
+    file: ../../../flows/checkout/common/checkout_buttons.yaml
+    env:
+      PROCEED_TO_PLACE_ORDER: true

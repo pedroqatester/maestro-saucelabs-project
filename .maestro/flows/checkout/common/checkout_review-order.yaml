@@ -1,0 +1,17 @@
+appId: com.saucelabs.mydemoapp.rn
+name: Subflow - Checkout review order before payment 
+tags:
+  - common
+---
+- extendedWaitUntil:
+    visible: "Checkout"
+    timeout: 30000
+- assertVisible: "Review your order"
+- assertVisible: "Sauce Labs Backpack"
+- assertVisible: "Delivery Address"
+- assertVisible: "Payment Method"
+- scrollUntilVisible:
+    element: "DHL Standard Delivery"
+- assertVisible: "Total:"
+- assertVisible: "1 item"
+- assertVisible: "$35.98"

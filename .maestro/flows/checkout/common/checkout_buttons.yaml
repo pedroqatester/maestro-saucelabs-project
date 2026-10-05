@@ -15,3 +15,9 @@ tags:
     commands:
       - tapOn: "Review Order"
       - assertNotVisible: "Review Order"
+- runFlow:
+    when:
+      true: "${PROCEED_TO_PLACE_ORDER}"
+    commands:
+      - tapOn: "Place Order"
+      - assertNotVisible: "Place Order"
